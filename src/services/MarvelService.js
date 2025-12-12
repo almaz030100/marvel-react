@@ -13,8 +13,8 @@ class MarvelService {
     })
   }
 
-  getAllCharacters = async () => {
-    const res = await this.useApi('/characters')
+  getAllCharacters = async (query = {}) => {
+    const res = await this.useApi('/characters', {query})
     return res.data?.results?.map(this._transformCharacter)
   }
 
@@ -25,11 +25,13 @@ class MarvelService {
 
   _transformCharacter = (data) => {
     return {
+      id: data.id,
       name: data.name,
       description: data.description,
       thumbnail: `${data.thumbnail?.path}.${data.thumbnail?.extension}`,
       homepage: data.urls?.[0]?.url,
       wiki: data.urls?.[1]?.url,
+      comics: data.comics?.items,
     }
   }
 

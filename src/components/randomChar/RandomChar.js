@@ -1,81 +1,82 @@
 import './randomChar.scss';
-import {Component} from "react";
+import {useEffect, useState} from "react";
 import MarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
-class RandomChar extends Component {
-  state = {
-    char: {},
-    loading: true,
-    error: false,
-  }
+const RandomChar = () => {
+  const [char, setChar] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
-  marvelService = new MarvelService()
+  const marvelService = new MarvelService()
 
-  updateChar = async () => {
+  async function updateChar() {
     try {
-      this.setState({loading: true})
+      setLoading(true)
       const id = Math.floor(Math.random() * 20) + 1
-      const char = await this.marvelService.getCharacter(id)
-      this.setState({char})
+      const char = await marvelService.getCharacter(id)
+      setChar(char)
     } catch (e) {
-      this.setState({error: true})
+      setError(true)
     } finally {
-      this.setState({loading: false})
+      setLoading(false)
     }
   }
 
-  async componentDidMount() {
-    await this.updateChar()
-  }
+  useEffect(() => {
+    async function fetchData() {
+      await updateChar()
+    }
+    fetchData()
+    // eslint-disable-next-line
+  }, [])
 
-  render() {
-    const {char: {name, description, thumbnail, homepage, wiki}, loading, error} = this.state
+  const {name, description, thumbnail, homepage, wiki} = char
 
-    return (
-      <div className="randomchar">
+  return (
+    <div className="randomchar">
 
-        {function () {
-          if (loading) return <Spinner/>
-          if (error) return <ErrorMessage/>
-          return (
-            <div className="randomchar__block">
-              <img src={thumbnail} alt={name} className="randomchar__img"/>
-              <div className="randomchar__info">
-                <p className="randomchar__name">{name}</p>
-                <p className="randomchar__descr">
-                  {description}
-                </p>
-                <div className="randomchar__btns">
-                  <a href={homepage} target="_blank" rel="noreferrer" className="button button__main">
-                    <div className="inner">homepage</div>
-                  </a>
-                  <a href={wiki} target="_blank" rel="noreferrer" className="button button__secondary">
-                    <div className="inner">Wiki</div>
-                  </a>
-                </div>
+      {function () {
+        if (loading) return <Spinner/>
+        if (error) return <ErrorMessage/>
+        return (
+          <div className="randomchar__block">
+            <img src={thumbnail} alt={name} className="randomchar__img"/>
+            <div className="randomchar__info">
+              <p className="randomchar__name">{name}</p>
+              <p className="randomchar__descr">
+                {description}
+              </p>
+              <div className="randomchar__btns">
+                <a href={homepage} target="_blank" rel="noreferrer" className="button button__main">
+                  <div className="inner">homepage</div>
+                </a>
+                <a href={wiki} target="_blank" rel="noreferrer" className="button button__secondary">
+                  <div className="inner">Wiki</div>
+                </a>
               </div>
             </div>
-          )
-        }()}
+          </div>
+        )
+      }()}
 
-        <div className="randomchar__static">
-          <p className="randomchar__title">
-            Random character for today!<br/>
-            Do you want to get to know him better?
-          </p>
-          <p className="randomchar__title">
-            Or choose another one
-          </p>
-          <button className="button button__main" onClick={this.updateChar}>
-            <div className="inner">try it</div>
-          </button>
-          <img src="/img/mjolnir.png" alt="mjolnir" className="randomchar__decoration"/>
-        </div>
+      <div className="randomchar__static">
+        <p className="randomchar__title">
+          Random character for today!<br/>
+          Do you want to get to know him better?
+        </p>
+        <p className="randomchar__title">
+          Or choose another one
+        </p>
+        <button className="button button__main" onClick={updateChar}>
+          <div className="inner">try it</div>
+        </button>
+        <img src="/img/mjolnir.png" alt="mjolnir" className="randomchar__decoration"/>
       </div>
-    )
-  }
+    </div>
+  )
+
 }
 
 export default RandomChar;
