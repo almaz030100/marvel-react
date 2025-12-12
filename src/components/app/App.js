@@ -3,6 +3,7 @@ import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
 import {useState} from "react";
+import ComicsList from "../comicsList/ComicsList";
 
 const App = () => {
   const [selectedChar, setSelectedChar] = useState(null)
@@ -16,6 +17,7 @@ const App = () => {
           <CharList onCharSelected={(id) => setSelectedChar(id)} selectedChar={selectedChar}/>
           <CharInfo charId={selectedChar}/>
         </div>
+        <ComicsList/>
       </main>
     </div>
   )

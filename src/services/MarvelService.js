@@ -13,6 +13,11 @@ const useMarvelService = () => {
     return _transformCharacter(res.data?.results?.[0])
   }
 
+  const getComics = async (query = {}) => {
+    const res = await request('/comics', {query})
+    return res.data?.results?.map(_transformComics)
+  }
+
   const _transformCharacter = (data) => {
     if (!data) return
     return {
@@ -26,7 +31,19 @@ const useMarvelService = () => {
     }
   }
 
-  return {loading, error, getAllCharacters, getCharacter}
+  const _transformComics = (data) => {
+    if (!data) return
+    return {
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      thumbnail: `${data.thumbnail?.path}.${data.thumbnail?.extension}`,
+      price: `${data.prices?.[0]?.price}$`,
+      url: `/comics/${data.id}`,
+    }
+  }
+
+  return {loading, error, getAllCharacters, getCharacter, getComics}
 
 }
 
