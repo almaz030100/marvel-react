@@ -8,6 +8,7 @@ export const useHttp = () => {
   const request = useCallback(async (url, opts = {}) => {
     try {
       setLoading(true)
+      setError(null)
       const res = await ofetch(url, {
         baseURL: 'https://marvel-server-zeta.vercel.app',
         ...opts,
