@@ -1,41 +1,32 @@
 import './charList.scss';
-import MarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import classNames from "classnames";
 import {useState, useEffect} from "react";
+import ErrorMessage from "../errorMessage/ErrorMessage";
+import useMarvelService from "../../services/MarvelService";
 
 const CharList = ({onCharSelected, selectedChar}) => {
   const [chars, setChars] = useState([])
-  const [pageLoading, setPageLoading] = useState(true)
   const [offset, setOffset] = useState(0)
-  const [loadMoreLoading, setLoadMoreLoading] = useState(false)
-  const total = 20
-  const limit = 9
-
-  const marvelService = new MarvelService()
+  const {error, loading, getAllCharacters} = useMarvelService()
 
   async function getChars() {
-    const newChars = await marvelService.getAllCharacters({limit, offset})
+    const newChars = await getAllCharacters({limit: 9, offset})
     setChars(chars => [...chars, ...newChars])
     setOffset(offset => offset + 9)
-  }
-
-  async function loadMore() {
-    setLoadMoreLoading(true)
-    await getChars()
-    setLoadMoreLoading(false)
   }
 
   useEffect(() => {
     async function fetchData() {
       await getChars()
-      setPageLoading(false)
     }
     fetchData()
     // eslint-disable-next-line
   }, [])
 
-  if (pageLoading) return <Spinner/>
+  if (loading && !chars?.length) return <Spinner/>
+
+  if (error) return <ErrorMessage/>
 
   return (
     <div className="char__list">
@@ -59,10 +50,10 @@ const CharList = ({onCharSelected, selectedChar}) => {
       </ul>
 
       {function () {
-        if (loadMoreLoading) return <Spinner/>
-        if (offset >= total) return
+        if (loading) return <Spinner/>
+        if (offset >= 20) return
         return (
-          <button className="button button__main button__long" onClick={loadMore}>
+          <button className="button button__main button__long" onClick={getChars}>
             <div className="inner">load more</div>
           </button>
         )

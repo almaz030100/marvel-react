@@ -1,29 +1,20 @@
-import {ofetch} from "ofetch";
+import {useHttp} from "../hooks/http.hook";
 
-class MarvelService {
+const useMarvelService = () => {
+  const {loading, request, error} = useHttp()
 
-  useApi = async (url, opts = {}) => {
-    return await ofetch(url, {
-      baseURL: 'https://marvel-server-zeta.vercel.app',
-      ...opts,
-      async onRequest({options}) {
-        options.query = options.query || options.params || {}
-        options.query.apikey = 'd4eecb0c66dedbfae4eab45d312fc1df'
-      }
-    })
+  const getAllCharacters = async (query = {}) => {
+    const res = await request('/characters', {query})
+    return res.data?.results?.map(_transformCharacter)
   }
 
-  getAllCharacters = async (query = {}) => {
-    const res = await this.useApi('/characters', {query})
-    return res.data?.results?.map(this._transformCharacter)
+  const getCharacter = async (id) => {
+    const res = await request(`/characters/${id}`)
+    return _transformCharacter(res.data?.results?.[0])
   }
 
-  getCharacter = async (id) => {
-    const res = await this.useApi(`/characters/${id}`)
-    return this._transformCharacter(res.data?.results?.[0])
-  }
-
-  _transformCharacter = (data) => {
+  const _transformCharacter = (data) => {
+    if (!data) return
     return {
       id: data.id,
       name: data.name,
@@ -35,6 +26,8 @@ class MarvelService {
     }
   }
 
+  return {loading, error, getAllCharacters, getCharacter}
+
 }
 
-export default MarvelService
+export default useMarvelService

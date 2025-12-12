@@ -2,7 +2,6 @@ import AppHeader from "../appHeader/AppHeader";
 import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
-import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import {useState} from "react";
 
 const App = () => {
@@ -15,9 +14,7 @@ const App = () => {
         <RandomChar/>
         <div className="char__content">
           <CharList onCharSelected={(id) => setSelectedChar(id)} selectedChar={selectedChar}/>
-          <ErrorBoundary>
-            <CharInfo charId={selectedChar}/>
-          </ErrorBoundary>
+          <CharInfo charId={selectedChar}/>
         </div>
       </main>
     </div>
