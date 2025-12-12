@@ -4,22 +4,34 @@ import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
 import {useState} from "react";
 import ComicsList from "../comicsList/ComicsList";
+import AppBanner from "../appBanner/AppBanner";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 
 const App = () => {
   const [selectedChar, setSelectedChar] = useState(null)
 
   return (
-    <div className="app">
-      <AppHeader/>
-      <main>
-        <RandomChar/>
-        <div className="char__content">
-          <CharList onCharSelected={(id) => setSelectedChar(id)} selectedChar={selectedChar}/>
-          <CharInfo charId={selectedChar}/>
-        </div>
-        <ComicsList/>
-      </main>
-    </div>
+    <Router>
+      <div className="app">
+        <AppHeader/>
+        <main>
+          <Switch>
+            <Route exact path="/">
+              <RandomChar/>
+              <div className="char__content">
+                <CharList onCharSelected={(id) => setSelectedChar(id)} selectedChar={selectedChar}/>
+                <CharInfo charId={selectedChar}/>
+              </div>
+            </Route>
+
+            <Route exact path="/comics">
+              <AppBanner/>
+              <ComicsList/>
+            </Route>
+          </Switch>
+        </main>
+      </div>
+    </Router>
   )
 }
 

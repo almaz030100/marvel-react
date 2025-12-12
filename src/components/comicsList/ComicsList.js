@@ -23,37 +23,43 @@ const ComicsList = () => {
     // eslint-disable-next-line
   }, [])
 
-  if (loading && !comics?.length) return <Spinner/>
-
-  if (error) return <ErrorMessage/>
-
   return (
     <div className="comics__list">
-      <ul className="comics__grid">
-
-        {comics.map(item => {
-          return (
-            <li key={item.id} className="comics__item">
-              <a href={item.url}>
-                <img src={item.thumbnail} alt={item.title} className="comics__item-img"/>
-                <div className="comics__item-name">{item.title}</div>
-                <div className="comics__item-price">{item.price}</div>
-              </a>
-            </li>
-          )
-        })}
-
-      </ul>
 
       {function () {
-        if (loading) return <Spinner/>
-        if (offset >= 20) return
+        if (loading && !comics?.length) return <Spinner/>
+        if (error) return <ErrorMessage/>
         return (
-          <button className="button button__main button__long" onClick={getComics}>
-            <div className="inner">load more</div>
-          </button>
+          <>
+            <ul className="comics__grid">
+
+              {comics.map(item => {
+                return (
+                  <li key={item.id} className="comics__item">
+                    <a href={item.url}>
+                      <img src={item.thumbnail} alt={item.title} className="comics__item-img"/>
+                      <div className="comics__item-name">{item.title}</div>
+                      <div className="comics__item-price">{item.price}</div>
+                    </a>
+                  </li>
+                )
+              })}
+
+            </ul>
+
+            {function () {
+              if (loading) return <Spinner/>
+              if (offset >= 20) return
+              return (
+                <button className="button button__main button__long" onClick={getComics}>
+                  <div className="inner">load more</div>
+                </button>
+              )
+            }()}
+          </>
         )
       }()}
+
     </div>
   )
 }
