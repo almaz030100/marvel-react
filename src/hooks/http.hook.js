@@ -18,7 +18,7 @@ export const useHttp = () => {
         }
       })
       if (res.error) {
-        throw new Error(`Could not fetch ${url}}`)
+        throw new Error(`Could not fetch ${url}`)
       }
       return res
     } catch (e) {
